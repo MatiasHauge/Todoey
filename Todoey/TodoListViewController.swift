@@ -11,10 +11,16 @@ import UIKit
 class TodoListViewController: UITableViewController {
     // This is hardcoded
     var itemArray = ["Lage apper", "Bli en koder", "Tren hardt" ]
+    
+    var defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    
+        // As is a casting
+        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
+            itemArray = items
+        }
     }
 
   // MARK - Tableview Datasource Methods
@@ -36,15 +42,13 @@ class TodoListViewController: UITableViewController {
         // This prints out the string directly to the console
         //print(itemArray[indexPath.row])
         
-        // This gives it a bit of cool animation
-        
         // This if statement does it posible to check and uncheck an checkmark inside the app
         if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
             tableView.cellForRow(at: indexPath)?.accessoryType = .none
         } else {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         }
-        
+        // This gives it a bit of cool animation
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -59,6 +63,9 @@ class TodoListViewController: UITableViewController {
        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
         
         self.itemArray.append(textField.text!)
+        
+        // Key value pair
+        self.defaults.set(self.itemArray, forKey: "TodoListArray")
         
         self.tableView.reloadData()
         
